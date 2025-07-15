@@ -13,7 +13,7 @@ class Input extends Component
         public ?string $label = null,
         public bool $inline = false,
     ) {
-        $this->uuid = "capy" . md5(serialize($this));
+        $this->uuid = "capy_" . md5(serialize($this));
     }
 
     public function getPlaceholder(): string
@@ -21,9 +21,9 @@ class Input extends Component
         return $this->attributes->get('placeholder', '');
     }
 
-    public function getModelName(): string
+    public function getModelName(): ?string
     {
-        return $this->attributes->get('wire:model', '');
+        return $this->attributes->get('wire:model');
     }
 
     public function render(): View|Closure|string
@@ -45,7 +45,7 @@ class Input extends Component
                             {{ $inputAttributes->class([
                                     'w-full rounded border border-gray-400 focus:border-blue-500 outline-none px-2 py-1'
                                 ]) }}
-                            placeholder="{{ $getPlaceholder() }} id="{{ $uuid }}"
+                            placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}"
                         />
                     </div>
                 @elseif ($label && $inline)
