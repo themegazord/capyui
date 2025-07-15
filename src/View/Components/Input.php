@@ -43,7 +43,7 @@ class Input extends Component
                         <label for="{{ $uuid }}" class="font-bold text-xs">{{ $label }}</label>
                         <input
                             {{ $inputAttributes->class([
-                                    'w-full rounded border border-gray-400 focus:border-blue-500 outline-none px-2 py-1'
+                                    'w-full rounded border border-gray-400 focus:border-primary outline-none px-2 py-1'
                                 ]) }}
                             placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}"
                         />
@@ -58,12 +58,12 @@ class Input extends Component
                             }
                         }"
                         class="relative m-4 border border-gray-300 rounded {{ $widthClass }}"
-                        :class="{ 'border-blue-500': focused || isDirty() }"
+                        :class="{ 'border-primary': focused || isDirty() }"
                     >
                         <label
                             x-show="focused || isDirty()"
                             x-transition.opacity.duration.200ms
-                            class="absolute top-[-8px] left-2 bg-white text-xs px-1 font-bold pointer-events-none"
+                            class="absolute top-[-8px] left-2 bg-base-100 text-primary text-xs px-1 font-bold pointer-events-none"
                             for="{{ $uuid }}"
                         >
                             {{ $label }}
@@ -71,7 +71,7 @@ class Input extends Component
 
                         <input
                             {{ $inputAttributes->class([
-                                'w-full peer border border-gray-400 focus:border-blue-500 outline-none px-2 py-1'
+                                'w-full peer border border-gray-400 focus:border-primary outline-none px-2 py-1'
                             ]) }}
                             placeholder="{{ $getPlaceholder() }}"
                             x-model="content"

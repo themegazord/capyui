@@ -11,13 +11,19 @@ class CapyServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        // Register any application services.
+        $this->mergeConfigFrom(__DIR__.'/../config/capy.php', 'capy');
     }
 
     public function boot()
     {
         $this->registerComponents();
         $this->registerBladeDirectives();
+        $this->publishes([
+            __DIR__ . '/../resources/themes' => public_path('vendor/capy/themes'),
+        ], 'capy-themes');
+        $this->publishes([
+            __DIR__.'/../config/capy.php' => config_path('capy.php'),
+        ], 'capy-config');
     }
 
     public function registerComponents(): void
