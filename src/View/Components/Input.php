@@ -8,39 +8,80 @@ use Illuminate\View\Component;
 
 class Input extends Component
 {
-    /**
-     * Create a new component instance.
-     */
+    public ?string $uuid = null;
     public function __construct(
         public ?string $label = null,
-        public ?bool $inline = false,
+        public bool $inline = false,
     ) {
-        //
+        $this->uuid = "capy" . md5(serialize($this));
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
+    public function getPlaceholder(): string
+    {
+        return $this->attributes->get('placeholder', '');
+    }
+
+    public function getModelName(): string
+    {
+        return $this->attributes->get('wire:model', '');
+    }
+
     public function render(): View|Closure|string
     {
         return <<<'blade'
-            @if($label && !$inline)
-                <div class="m-4 relative border rounded">
-                    <input type="email" class="peer w-full placeholder:text-transparent py-1 text-lg" placeholder="name" />
-                    <label class="font-semibold peer-focus:my-1 absolute left-0 top-1 ml-1 -translate-y-3 bg-white px-1 text-lg duration-100 ease-linear
-                                peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-lg peer-placeholder-shown:text-black
-                                peer-focus:ml-1 peer-focus:-translate-y-5 peer-focus:px-1 peer-focus:text-lg"
-                        placeholder="{{$label}}">
-                        {{ $label }}
-                    </label>
-                </div>
-            @endif
-            @if($label && $inline)
-                <fieldset class="m-4 relative">
-                    <legend class="font-bold">{{ $label }}</legend>
-                    <input type="email" class="peer w-full border-b placeholder:text-transparent" placeholder="name" />
-                </fieldset>
-            @endif
+            @php
+                $uuid = $getModelName() . $uuid;
+                $inputAttributes = $attributes->merge(['type' => 'text']);
+                $hasWidthClass = str($attributes->get('class'))->contains('w-');
+                $containerClass = $attributes->get('class');
+                $widthClass = $hasWidthClass ? $containerClass : 'w-full';
+            @endphp
+
+            <div>
+                @if ($label && !$inline)
+                    <div class="flex flex-col gap-1 m-4 {{ $attributes->get('class', '') }}" >
+                        <label class="font-bold text-xs">{{ $label }}</label>
+                        <input
+                            {{ $inputAttributes->class([
+                                    'w-full rounded border border-gray-400 focus:border-blue-500 outline-none px-2 py-1'
+                                ]) }}
+                            placeholder="{{ $getPlaceholder() }} id="{{ $uuid }}"
+                        />
+                    </div>
+                @elseif ($label && $inline)
+                    <div
+                        x-data="{
+                            focused: false,
+                            content: '',
+                            isDirty() {
+                                return this.content !== '';
+                            }
+                        }"
+                        class="relative m-4 border border-gray-300 rounded {{ $widthClass }}"
+                        :class="{ 'border-blue-500': focused || isDirty() }"
+                    >
+                        <label
+                            x-show="focused || isDirty()"
+                            x-transition.opacity.duration.200ms
+                            class="absolute top-[-8px] left-2 bg-white text-xs px-1 font-bold pointer-events-none"
+                            for="{{ $uuid }}"
+                        >
+                            {{ $label }}
+                        </label>
+
+                        <input
+                            {{ $inputAttributes->class([
+                                'w-full peer border border-gray-400 focus:border-blue-500 outline-none px-2 py-1'
+                            ]) }}
+                            placeholder="{{ $getPlaceholder() }}"
+                            x-model="content"
+                            @focus="focused = true"
+                            @blur="focused = false"
+                            id="{{ $uuid }}"
+                        />
+                    </div>
+                @endif
+            </div>
         blade;
     }
 }
