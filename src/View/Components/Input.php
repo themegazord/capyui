@@ -40,7 +40,7 @@ class Input extends Component
             <div>
                 @if ($label && !$inline)
                     <div class="flex flex-col gap-1 m-4 {{ $attributes->get('class', '') }}" >
-                        <label class="font-bold text-xs">{{ $label }}</label>
+                        <label for="{{ $uuid }}" class="font-bold text-xs">{{ $label }}</label>
                         <input
                             {{ $inputAttributes->class([
                                     'w-full rounded border border-gray-400 focus:border-blue-500 outline-none px-2 py-1'
