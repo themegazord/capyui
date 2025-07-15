@@ -2,6 +2,7 @@
     "name": "themegazord/capyui",
     "description": "CapyUI is a modern, modular UI components library for Laravel applications, focused on clean design and usability. Inspired by the capybara - a symbol of calmness and adaptability - CapyUI makes it easy to build elegant, consistent interfaces quickly and effortlessly.",
     "type": "library",
+    "license": "MIT",
     "require": {
         "illuminate/support": "^10.0|^11.0|^12.0"
     },
