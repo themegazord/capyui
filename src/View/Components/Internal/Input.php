@@ -11,6 +11,8 @@ class Input extends Component
     public function __construct(
         public ?string $id = null,
         public ?string $placeholder = null,
+        public ?bool $prefix = false,
+        public ?bool $suffix = false,
     ){
 
     }
@@ -22,7 +24,11 @@ class Input extends Component
             @endphp
             <input
                 {{ $inputAttributes->class([
-                    'w-full rounded border border-gray-400 focus:border-primary outline-none px-2 py-1'
+                    'w-full border focus:border-primary  border-gray-400 outline-none px-2 py-1',
+                    'rounded' => !$prefix && !$suffix,
+                    'rounded-r' => $prefix && !$suffix,
+                    'rounded-l' => !$prefix && $suffix,
+                    'rounded-none' => $prefix && $suffix,
                 ]) }}
                 placeholder="{{ $placeholder }}"
                 id="{{ $id }}"

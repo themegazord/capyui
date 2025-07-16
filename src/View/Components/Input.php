@@ -12,6 +12,8 @@ class Input extends Component
     public function __construct(
         public ?string $label = null,
         public bool $inline = false,
+        public ?string $prefix = null,
+        public ?string $suffix = null,
     ) {
         $this->uuid = "capy_" . md5(serialize($this));
     }
@@ -38,9 +40,31 @@ class Input extends Component
 
             <div>
                 @if ($label && !$inline)
-                    <div class="flex flex-col gap-1 m-4 {{ $attributes->get('class', '') }}" >
+                    <div class="flex flex-col gap-1 m-4 {{ $attributes->get('class', '') }}" x-data="{
+                                focused: false,
+                                content: '',
+                                isDirty() {
+                                    return this.content !== '';
+                                }
+                            }">
                         <label for="{{ $uuid }}" class="font-bold text-xs">{{ $label }}</label>
-                        <x-capy-input placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}"/>
+                        <div @class(['flex items-center' => $prefix || $suffix])>
+                            @if ($prefix)
+                                <span class="border border-gray-300 rounded-l px-2 py-2 flex items-center"
+                                    :class="{ 'border-primary': focused }"
+                                >
+                                    <i class="{{ $prefix }}"></i>
+                                </span>
+                            @endif
+                            <x-capy-input placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}" prefix="{{ $prefix }}" suffix="{{ $suffix }}" @focus="focused = true" @blur="focused = false"/>
+                            @if ($suffix)
+                                <span class="border border-gray-300 rounded-r px-2 py-2 flex items-center"
+                                    :class="{ 'border-primary': focused }"
+                                >
+                                    <i class="{{ $suffix }}"></i>
+                                </span>
+                            @endif
+                        </div>
                     </div>
                 @elseif ($label && $inline)
                     <div
@@ -57,13 +81,31 @@ class Input extends Component
                         <label
                             x-show="focused || isDirty()"
                             x-transition.opacity.duration.200ms
-                            class="absolute top-[-8px] left-2 bg-base-100 text-primary text-xs px-1 font-bold pointer-events-none"
+                            @class([
+                                'absolute top-[-8px] left-2 bg-base-100 text-primary text-xs px-1 font-bold pointer-events-none',
+                                'left-10' => $prefix
+                            ])
                             for="{{ $uuid }}"
                         >
                             {{ $label }}
                         </label>
-
-                        <x-capy-input placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}" x-model="content" @focus="focused = true" @blur="focused = false" />
+                        <div @class(['flex items-center' => $prefix || $suffix])>
+                            @if ($prefix)
+                                <span class="border border-gray-300 rounded-l px-2 py-2 flex items-center"
+                                    :class="{ 'border-primary': focused }"
+                                >
+                                    <i class="{{ $prefix }}"></i>
+                                </span>
+                            @endif
+                            <x-capy-input placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}" prefix="{{ $prefix }}" suffix="{{ $suffix }}" x-model="content" @focus="focused = true" @blur="focused = false" />
+                            @if ($suffix)
+                                <span class="border border-gray-300 rounded-r px-2 py-2 flex items-center"
+                                    :class="{ 'border-primary': focused }"
+                                >
+                                    <i class="{{ $suffix }}"></i>
+                                </span>
+                            @endif
+                        </div>
                     </div>
                 @endif
             </div>
