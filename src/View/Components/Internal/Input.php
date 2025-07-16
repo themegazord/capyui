@@ -13,6 +13,7 @@ class Input extends Component
         public ?string $placeholder = null,
         public ?bool $prefix = false,
         public ?bool $suffix = false,
+        public ?bool $hasErrors = false,
     ){
 
     }
@@ -24,7 +25,9 @@ class Input extends Component
             @endphp
             <input
                 {{ $inputAttributes->class([
-                    'w-full border focus:border-primary  border-gray-400 outline-none px-2 py-1',
+                    'w-full border focus:border-primary outline-none px-2 py-1',
+                    "border-gray-300" => !$hasErrors,
+                    'border-error' => $hasErrors,
                     'rounded' => !$prefix && !$suffix,
                     'rounded-r' => $prefix && !$suffix,
                     'rounded-l' => !$prefix && $suffix,

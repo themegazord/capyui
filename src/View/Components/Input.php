@@ -36,6 +36,7 @@ class Input extends Component
                 $hasWidthClass = str($attributes->get('class'))->contains('w-');
                 $containerClass = $attributes->get('class');
                 $widthClass = $hasWidthClass ? $containerClass : 'w-full';
+                $hasErrors = $errors->has($getModelName());
             @endphp
 
             <div>
@@ -50,21 +51,42 @@ class Input extends Component
                         <label for="{{ $uuid }}" class="font-bold text-xs">{{ $label }}</label>
                         <div @class(['flex items-center' => $prefix || $suffix])>
                             @if ($prefix)
-                                <span class="border border-gray-300 rounded-l px-2 py-2 flex items-center"
+                                <span @class([
+                                    "border rounded-l px-2 py-2 flex items-center",
+                                    "border-gray-300" => !$hasErrors,
+                                    "border-error" => $hasErrors
+                                ])
                                     :class="{ 'border-primary': focused }"
                                 >
                                     <i class="{{ $prefix }}"></i>
                                 </span>
                             @endif
-                            <x-capy-input placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}" prefix="{{ $prefix }}" suffix="{{ $suffix }}" @focus="focused = true" @blur="focused = false"/>
+                            <x-capy-input
+                                placeholder="{{ $getPlaceholder() }}"
+                                id="{{ $uuid }}"
+                                prefix="{{ $prefix }}"
+                                suffix="{{ $suffix }}"
+                                @focus="focused = true"
+                                @blur="focused = false"
+                                hasErrors="{{$hasErrors}}"
+                            />
                             @if ($suffix)
-                                <span class="border border-gray-300 rounded-r px-2 py-2 flex items-center"
+                                <span @class([
+                                    "border rounded-r px-2 py-2 flex items-center",
+                                    "border-gray-300" => !$hasErrors,
+                                    "border-error" => $hasErrors
+                                ])
                                     :class="{ 'border-primary': focused }"
                                 >
                                     <i class="{{ $suffix }}"></i>
                                 </span>
                             @endif
                         </div>
+                        @if($hasErrors)
+                            @foreach($errors->get($getModelName()) as $error)
+                                <span class="text-error text-sm">{{ $error }}</span>
+                            @endforeach
+                        @endif
                     </div>
                 @elseif ($label && $inline)
                     <div
