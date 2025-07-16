@@ -31,7 +31,6 @@ class Input extends Component
         return <<<'blade'
             @php
                 $uuid = $getModelName() . $uuid;
-                $inputAttributes = $attributes->merge(['type' => 'text']);
                 $hasWidthClass = str($attributes->get('class'))->contains('w-');
                 $containerClass = $attributes->get('class');
                 $widthClass = $hasWidthClass ? $containerClass : 'w-full';
@@ -41,12 +40,7 @@ class Input extends Component
                 @if ($label && !$inline)
                     <div class="flex flex-col gap-1 m-4 {{ $attributes->get('class', '') }}" >
                         <label for="{{ $uuid }}" class="font-bold text-xs">{{ $label }}</label>
-                        <input
-                            {{ $inputAttributes->class([
-                                    'w-full rounded border border-gray-400 focus:border-primary outline-none px-2 py-1'
-                                ]) }}
-                            placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}"
-                        />
+                        <x-capy-input placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}"/>
                     </div>
                 @elseif ($label && $inline)
                     <div
@@ -69,16 +63,7 @@ class Input extends Component
                             {{ $label }}
                         </label>
 
-                        <input
-                            {{ $inputAttributes->class([
-                                'w-full peer border border-gray-400 focus:border-primary outline-none px-2 py-1'
-                            ]) }}
-                            placeholder="{{ $getPlaceholder() }}"
-                            x-model="content"
-                            @focus="focused = true"
-                            @blur="focused = false"
-                            id="{{ $uuid }}"
-                        />
+                        <x-capy-input placeholder="{{ $getPlaceholder() }}" id="{{ $uuid }}" x-model="content" @focus="focused = true" @blur="focused = false" />
                     </div>
                 @endif
             </div>

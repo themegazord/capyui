@@ -3,6 +3,7 @@
 namespace Capy;
 
 use Capy\View\Components\Input;
+use Capy\View\Components\Internal\Input as InternalInput;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -30,6 +31,7 @@ class CapyServiceProvider extends ServiceProvider
     {
         $prefix = config('capy.prefix');
         Blade::component($prefix . 'input', Input::class);
+        Blade::component('capy-input', InternalInput::class);
     }
 
     public function registerBladeDirectives(): void
